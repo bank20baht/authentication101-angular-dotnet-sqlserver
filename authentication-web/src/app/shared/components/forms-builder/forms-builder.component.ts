@@ -29,14 +29,6 @@ export class FormsBuilderComponent {
 
     let nextValue = value;
 
-    if (type === 'number') {
-      nextValue = value === '' || value === null ? null : Number(value);
-    }
-
-    if (type === 'select') {
-      nextValue = value === '' || value === null ? null : value;
-    }
-
     if (field.format) {
       nextValue = field.format(nextValue);
     }
@@ -118,7 +110,6 @@ export interface FormFieldConfig {
   errorDesc?: string;
   touched?: boolean;
   displayKey?: string;
-  selectOptions?: any[];
   value?: any;
   error?: string | null;
   validation?: (value: any, fields: FormFieldConfig[]) => string | null;
