@@ -10,8 +10,8 @@
           [autocomplete]="'new-password'"
           [id]="'field_' + field.key + '_' + timestamp"
           aria-autocomplete="none"
-          [ngClass]="field.error && field.touched ? 'input-error' : 'input'"
-          class="input"
+          [ngClass]="!isFieldValid(field) && field.touched ? 'input-error' : 'input'"
+          class="input w-full placeholder-gray-500"
           [type]="field.type"
           [ngModel]="field.value"
           (ngModelChange)="onFieldChange(field.key, $event, field.type)"
@@ -21,7 +21,7 @@
           #inputElem
         />
         @if (field.error && field.touched) {
-          <div class="field-error">
+          <div class="text-red-500 text-sm mt-1">
             {{ field.error }}
           </div>
         }
@@ -77,7 +77,7 @@
 
         @if (!isFieldValid(field) && field.touched) {
           <div class="text-red-500 text-sm mt-1">
-            {{ 'ข้อมูล ' + field.label + ' ไม่ถูกต้อง' }}
+            {{ field.error }}
           </div>
         }
       }

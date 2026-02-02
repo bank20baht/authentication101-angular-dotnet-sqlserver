@@ -1,3 +1,5 @@
 {
-  "app-name": "โปรดัคเเมน"
+  "app-name": "โปรดัคเเมน",
+  "login.forms.username": "ชื่อผู้ใช้",
+  "login.forms.password": "รหัสผ่าน"
 }

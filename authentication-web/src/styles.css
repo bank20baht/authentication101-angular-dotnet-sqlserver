@@ -5,3 +5,14 @@
   themes: light --default
 }
 
+@import 'ngx-toastr/toastr';
+
+
+@font-face {
+  font-family: 'MyFont';
+  src: url('/assets/fonts/Kanit-Regular.ttf') format('truetype');
+}
+
+body {
+  font-family: 'MyFont', sans-serif;
+}
