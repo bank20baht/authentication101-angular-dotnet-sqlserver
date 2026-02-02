@@ -6,7 +6,7 @@
       (onFormValidStatusChange)="isAuthenFormsValid.set($event)"
     />
     <button class="btn btn-primary w-full" (click)="onLogin()" [disabled]="!isAuthenFormsValid()">
-      Login
+      {{ 'login.forms.login-button' | translate }}
     </button>
   </div>
 </div>
