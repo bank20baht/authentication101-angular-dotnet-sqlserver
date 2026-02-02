@@ -2,10 +2,11 @@ import { AuthenticationService } from '@/services';
 import { AuthenticationRequestBody, FormFieldConfig, FormsBuilderComponent } from '@/shared';
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'authen-login',
-  imports: [FormsBuilderComponent],
+  imports: [FormsBuilderComponent, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -20,7 +21,7 @@ export class LoginComponent {
       key: 'username',
       label: 'login.forms.username',
       type: 'text',
-      placeholder: 'กรอกชื่อสินค้า',
+      placeholder: 'กรอกชื่อผู้ใช้',
       value: '',
       validation: (value) => {
         if (!value) return 'กรุณากรอก username';
@@ -31,7 +32,7 @@ export class LoginComponent {
       key: 'password',
       label: 'login.forms.password',
       type: 'password',
-      placeholder: 'กรอกชื่อสินค้า',
+      placeholder: 'กรอกรหัสผ่าน',
       value: '',
       validation: (value) => {
         if (!value) return 'กรุณากรอก password';
@@ -45,15 +46,13 @@ export class LoginComponent {
   }
 
   onLogin() {
-    this.authService
-      .login(this.authenData())
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/']);
-        },
-        error: (err) => {
-          console.error(err);
-        },
-      });
+    this.authService.login(this.authenData()).subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 }
