@@ -1,0 +1,247 @@
+/* Overlay */
+.confirm-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  backdrop-filter: blur(2px);
+  transition: all 0.3s ease-in-out;
+}
+
+.overlay-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.overlay-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Dialog Container */
+.confirm-dialog-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  min-width: 320px;
+  /* Minimum width for readability */
+  max-width: 90vw;
+  /* Responsive maximum width */
+  width: fit-content;
+  /* Width adjusts to content */
+  max-height: 90vh;
+  overflow: hidden;
+  transform: scale(0.95);
+  transition: all 0.3s ease-in-out;
+}
+
+.dialog-visible {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.dialog-hidden {
+  transform: scale(0.95);
+  opacity: 0;
+}
+
+/* Header */
+.dialog-header {
+  padding: 16px 20px 12px 20px;
+  /* Reduced padding further */
+  border-radius: 12px 12px 0 0;
+}
+
+.bg-info {
+  background-color: #e6f1ff;
+  color: #0b5ed7;
+  border: 1px solid #bcd4ff;
+}
+
+.bg-success {
+  background-color: #eaf7ea;
+  color: #2e7d32;
+  border: 1px solid #cde8cd;
+}
+
+.bg-warning {
+  background-color: #fff7e6;
+  color: #b26a00;
+  border: 1px solid #ffe0a3;
+}
+
+.bg-error {
+  background-color: #ffe6e6;
+  color: #b00020;
+  border: 1px solid #ffb3b3;
+}
+
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dialog-icon {
+  width: 28px;
+  height: 28px;
+  color: #3b82f6;
+  /* Blue color */
+  flex-shrink: 0;
+}
+
+.dialog-title h3 {
+  margin: 0;
+  font-size: 16px;
+  /* Reduced from 18px */
+  font-weight: 500;
+  /* Increased from 400 to medium weight */
+  font-family: 'BBL Sans', sans-serif;
+  /* Added BBL Sans font */
+  color: #1f2937;
+  /* Changed to darker gray for more emphasis */
+  line-height: 1.4;
+}
+
+/* Body */
+.dialog-body {
+  padding: 24px;
+  white-space: nowrap;
+  /* Prevent text wrapping to measure natural width */
+  overflow: visible;
+}
+
+.dialog-message {
+  margin: 0;
+  font-size: 16px;
+  color: #374151;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  /* Allow natural text wrapping and preserve spaces */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 70ch;
+  /* Limit to readable line length (approximately 70 characters) */
+}
+
+/* Footer */
+.dialog-footer {
+  padding: 0 24px 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  min-width: 80px;
+  text-align: center;
+}
+
+.btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.btn-cancel {
+  background-color: #f9fafb;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.btn-cancel:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.btn-cancel:active {
+  background-color: #e5e7eb;
+}
+
+.btn-confirm {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.btn-confirm:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-confirm:active {
+  background-color: #1d4ed8;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .confirm-dialog-container {
+    margin: 16px;
+    min-width: 280px;
+    /* Reduced minimum width for mobile */
+    max-width: calc(100vw - 32px);
+    /* Account for margins */
+    width: fit-content;
+  }
+
+  .dialog-message {
+    max-width: 50ch;
+    /* Shorter line length on mobile */
+  }
+
+  .dialog-footer {
+    flex-direction: column-reverse;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+/* Animation */
+@keyframes dialogSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes dialogSlideOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+}
+
+.dialog-visible {
+  animation: dialogSlideIn 0.3s ease-out;
+}
+
+.dialog-hidden {
+  animation: dialogSlideOut 0.3s ease-in;
+}

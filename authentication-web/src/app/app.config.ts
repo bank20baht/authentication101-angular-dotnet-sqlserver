@@ -5,16 +5,20 @@ import { routes } from './app.routes';
 import { provideToastr } from 'ngx-toastr';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { CustomInterceptor } from './interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
+    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },
+    provideAnimations(),
     provideToastr({
       timeOut: 10000,
-      positionClass: 'toast-bottom-left',
+      positionClass: 'toast-bottom-right',
     }),
     provideTranslateService({
       loader: provideTranslateHttpLoader({

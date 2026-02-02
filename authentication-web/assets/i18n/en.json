@@ -1,3 +1,8 @@
 {
-  "app-name": "PRODUCTMAN"
+  "app-name": "PRODUCTMAN",
+  "login.forms.username": "Username",
+  "login.forms.password": "Password",
+  "login.forms.login-button": "Login",
+  "register.forms.confirm-password": "Confirm Password",
+  "register.forms.register-button": "Register"
 }

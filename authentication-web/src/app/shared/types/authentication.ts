@@ -8,6 +8,10 @@ export type AuthenticationRequestBody = {
   password: string;
 };
 
+export type RegisterRequestBody = {
+  username: string;
+  password: string;
+};
 export type LogoutResponseBodyDto = {
   message: string;
   timestamps: string;
