@@ -8,14 +8,20 @@ public static class Program
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddSwaggerGen();
+        DotNetEnv.Env.Load();
+        var configuration = new Configuration.Configuration();
 
         SwaggerConfiguration.ConfigurationServices(builder.Services);
+        DependencyInjectionConfiguration.ConfigureServices(builder.Services, configuration);
+
+        JwtTokenConfiguration.ConfigureServices(builder.Services);
+
         var app = builder.Build();
 
+        app.UseCors("AllowOrigin");
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseResponseCompression();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
