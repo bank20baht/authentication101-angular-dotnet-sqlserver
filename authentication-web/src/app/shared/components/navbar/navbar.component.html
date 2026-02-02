@@ -1,0 +1,36 @@
+<nav class="navbar bg-base-100 shadow-sm">
+  <div class="flex-1">
+    <a class="btn btn-ghost text-xl">{{ 'app-name' | translate }}</a>
+  </div>
+  <div class="flex-none flex flex-row gap-2 items-center">
+    <div class="inline-flex rounded-lg bg-gray-100 p-1">
+      <button
+        (click)="switchLang('th')"
+        class="px-4 py-2 text-sm font-medium rounded-md transition hover:bg-white hover:shadow focus:outline-none"
+        [ngClass]="{
+          'bg-white shadow text-blue-600': currentLang === 'th',
+          'text-gray-500': currentLang !== 'th',
+        }"
+      >
+        ไทย
+      </button>
+
+      <button
+        (click)="switchLang('en')"
+        class="px-4 py-2 text-sm font-medium rounded-md transition hover:bg-white hover:shadow focus:outline-none"
+        [ngClass]="{
+          'bg-white shadow text-blue-600': currentLang === 'en',
+          'text-gray-500': currentLang !== 'en',
+        }"
+      >
+        EN
+      </button>
+    </div>
+
+    <div style="padding: 5px; display: flex; flex-direction: row; gap: 10px">
+      <div style="margin: auto">Hello, {{ authenticationService.userData$()?.username }}</div>
+      <authen-button [type]="'error'" (onClick)="handleClickLogout()"> Logout </authen-button>
+    </div>
+  </div>
+</nav>
+<router-outlet></router-outlet>
