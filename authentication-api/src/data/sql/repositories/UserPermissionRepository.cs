@@ -20,9 +20,9 @@ public class UserPermissionRepository(ISqlConnectionFactory connectionFactory) :
 
         var sql = @"
             INSERT INTO UserPermission
-            (username, refresh_token, allow_function)
+            (username, refresh_token, allow_function, password)
             VALUES
-            (@username, @refresh_token, @allow_function)
+            (@username, @refresh_token, @allow_function, @password)
         ";
 
         var affected = await connection.ExecuteAsync(sql, body);

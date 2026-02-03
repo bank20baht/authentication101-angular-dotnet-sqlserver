@@ -21,52 +21,38 @@ public static class AuthenticationController
     {
         var authenticationRoutes = routes.MapGroup("/api/authentication").WithTags("[API] Authentication");
 
-        authenticationRoutes.MapPostWithCommonResponses("login", async (AuthenticationRequestBodyDto body, IMediator mediator, AccessTokenService accessTokenService, RefreshTokenService refreshTokenService, HttpContext http, CancellationToken cancellationToken) =>
+        authenticationRoutes.MapPostWithCommonResponses("login", async (AuthenticationRequestBodyDto body, IMediator mediator, IPasswordHasher hasher, AccessTokenService accessTokenService, RefreshTokenService refreshTokenService, HttpContext http, CancellationToken cancellationToken) =>
         {
-            List<string> permission = [];
-
-            if (body.username == "admin")
-            {
-                permission = ["view_data"];
-            }
-            else
-            {
-                throw new NotExistingUserErrorException($"ไม่พบผู้ใช้ {body.username} ในระบบ ดู account ที่ใช้ได้จาก github ของ repo นี้ครับ");
-            }
-
-            var allowFunctionJson = JsonSerializer.Serialize(permission,
-            new JsonSerializerOptions
-            {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                WriteIndented = false
-            });
-
-            var accessToken = accessTokenService.Create(new AuthenticationModel
-            {
-                UserName = body.username,
-                Permissions = permission,
-            });
-
-            var refreshToken = refreshTokenService.Create(Guid.NewGuid());
             var existingUser = await mediator.Send(new GetUserPermissionByUsernameQuery(body.username), cancellationToken);
             if (existingUser == null)
             {
-                await mediator.Send(new AddUserPermissionCommand(new UserPermission
-                {
-                    username = body.username,
-                    refresh_token = refreshToken,
-                    allow_function = allowFunctionJson
-                }), cancellationToken);
+                throw new NotFoundException("plasse register");
             }
-            else
+
+            bool verifyed = hasher.Verify(body.password, existingUser.password ?? "");
+
+            List<string> permissions = JsonSerializer.Deserialize<List<string>>(existingUser.allow_function ?? "") ?? [];
+            var allowFunctionJson = JsonSerializer.Serialize(permissions,
+                    new JsonSerializerOptions
+                    {
+                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                        WriteIndented = false
+                    });
+
+            var accessToken = accessTokenService.Create(new AuthenticationModel
             {
-                await mediator.Send(new UpdateRefreshTokenByUsernameCommand(new UserPermission
-                {
-                    username = body.username,
-                    refresh_token = refreshToken,
-                    allow_function = allowFunctionJson
-                }), cancellationToken);
-            }
+                UserName = existingUser.username,
+                Permissions = permissions,
+            });
+
+            var refreshToken = refreshTokenService.Create(Guid.NewGuid());
+            await mediator.Send(new UpdateRefreshTokenByUsernameCommand(new UserPermission
+            {
+                username = body.username,
+                refresh_token = refreshToken,
+                allow_function = allowFunctionJson
+            }), cancellationToken);
+
 
 
             http.Response.Cookies.Append("access_token", accessToken, new CookieOptions
@@ -83,6 +69,43 @@ public static class AuthenticationController
                 SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddHours(2)
             });
+
+            return TypedResults.Ok(new AuthorizationResponseDto
+            {
+                username = body.username,
+                application_function = permissions,
+            });
+
+        });
+
+
+        authenticationRoutes.MapPostWithCommonResponses("register", async (AuthenticationRequestBodyDto body, IPasswordHasher hasher, IMediator mediator, CancellationToken cancellationToken) =>
+        {
+            List<string> permission = ["view_data"];
+
+            var allowFunctionJson = JsonSerializer.Serialize(permission,
+            new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = false
+            });
+
+            var existingUser = await mediator.Send(new GetUserPermissionByUsernameQuery(body.username), cancellationToken);
+            if (existingUser == null)
+            {
+                var hashPassword = hasher.Hash(body.password);
+                await mediator.Send(new AddUserPermissionCommand(new UserPermission
+                {
+                    username = body.username,
+                    refresh_token = null,
+                    password = hashPassword,
+                    allow_function = allowFunctionJson
+                }), cancellationToken);
+            }
+            else
+            {
+                throw new ApplicationErrorException("existing username");
+            }
 
             return TypedResults.Ok(new AuthorizationResponseDto
             {
@@ -122,7 +145,7 @@ public static class AuthenticationController
             if (existingUser == null)
             {
 
-                throw new NotExistingUserErrorException($"ไม่พบผู้ใช้ {body.username} ในระบบ กรุณาเข้าสู่ระบบก่อน");
+                throw new NotExistingUserErrorException($"ไม่พบผู้ใช้ {body.username} ในระบบ กรุณาสมัครบัญชีก่อน");
 
             }
 

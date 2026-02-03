@@ -1,5 +1,6 @@
 using AuthenticationService.Configuration;
 using AuthenticationService.Controller;
+using Shared.Middleware;
 
 
 namespace AuthenticationService;
@@ -18,6 +19,8 @@ public static class Program
         JwtTokenConfiguration.ConfigureServices(builder.Services);
 
         var app = builder.Build();
+
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         app.UseCors("AllowOrigin");
         app.UseAuthentication();
