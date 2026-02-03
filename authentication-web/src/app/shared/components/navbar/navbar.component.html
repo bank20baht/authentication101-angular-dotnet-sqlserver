@@ -1,9 +1,7 @@
 <div class="h-screen flex flex-col">
-  <nav class="navbar bg-base-100 shadow-sm">
-    <div class="flex-1">
-      <a class="btn btn-ghost text-xl">{{ 'app-name' | translate }}</a>
-    </div>
-    <div class="flex-none flex flex-row gap-2 items-center">
+  <nav class="navbar bg-base-100 shadow-sm justify-between flex flex-row">
+    <div class="text-xl text-center">{{ title }}</div>
+    <div class="flex flex-row gap-2 items-center">
       <div class="inline-flex rounded-lg bg-gray-100 p-1">
         <button
           (click)="switchLang('th')"
@@ -29,8 +27,10 @@
       </div>
 
       <div style="padding: 5px; display: flex; flex-direction: row; gap: 10px">
-        <div style="margin: auto">Hello, {{ authenticationService.userData$()?.username }}</div>
-        <authen-button [type]="'error'" (onClick)="handleClickLogout()"> Logout </authen-button>
+        @if (authenticationService.userData$()) {
+          <div style="margin: auto">Hello, {{ authenticationService.userData$()?.username }}</div>
+          <button class="btn btn-error btn-outline" (click)="handleClickLogout()">Logout</button>
+        }
       </div>
     </div>
   </nav>

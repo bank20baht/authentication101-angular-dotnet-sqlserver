@@ -4,5 +4,6 @@
   "login.forms.password": "Password",
   "login.forms.login-button": "Login",
   "register.forms.confirm-password": "Confirm Password",
-  "register.forms.register-button": "Register"
+  "register.forms.register-button": "Register",
+  "main.welcome": "Hello"
 }
