@@ -20,8 +20,8 @@ public class AccessTokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             SigningCredentials = signingCredentials,
-            Audience = "sme-stock-domain-service",
-            Issuer = "sme-stock-identity",
+            Audience = "authentication101user",
+            Issuer = "authentication101",
             Expires = DateTime.UtcNow.AddMinutes(1),
             Subject = GenerateClaims(user)
         };

@@ -1,7 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Shared.Dto;
 
 namespace AuthenticationService.Configuration;
 
@@ -32,15 +34,45 @@ public static class JwtTokenConfiguration
             {
                 IssuerSigningKey = new RsaSecurityKey(rsa),
                 ValidateIssuer = true,
-                ValidIssuer = "sme-stock-identity",
+                ValidIssuer = "authentication101",
                 ValidateAudience = true,
-                ValidAudience = "sme-stock-domain-service",
+                ValidAudience = "authentication101user",
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
 
             options.Events = new JwtBearerEvents
             {
+                OnChallenge = async context =>
+                    {
+                        context.HandleResponse();
+
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+
+                        var error_detail = new ProblemDetailResponse
+                        {
+                            code = $"{context.Response.StatusCode}",
+                            desc = "Invalid or missing JWT token"
+                        };
+
+                        var error_object = JsonSerializer.Serialize(error_detail);
+                        await context.Response.WriteAsync(error_object);
+                    },
+                OnAuthenticationFailed = async context =>
+                {
+                    context.Response.StatusCode = 401;
+                    context.Response.ContentType = "application/json";
+
+                    var error_detail = new ProblemDetailResponse
+                    {
+                        code = $"{context.Response.StatusCode}",
+                        desc = "Invalid or missing JWT token"
+                    };
+
+                    var error_object = JsonSerializer.Serialize(error_detail);
+                    await context.Response.WriteAsync(error_object);
+                },
                 OnMessageReceived = context =>
                 {
                     var accessToken = context.Request.Cookies["access_token"];
