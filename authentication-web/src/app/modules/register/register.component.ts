@@ -34,8 +34,13 @@ export class RegisterComponent {
       type: 'password',
       placeholder: 'กรอกรหัสผ่าน',
       value: '',
-      validation: (value) => {
+      validation: (value, fields) => {
+        const confirmPassword = fields.find((f) => f.key === 'confirm-password')?.value;
+
         if (!value) return 'กรุณากรอก password';
+        if (confirmPassword && value !== confirmPassword) {
+          return 'รหัสผ่านไม่ตรงกัน';
+        }
         return null;
       },
     },
@@ -45,8 +50,11 @@ export class RegisterComponent {
       type: 'password',
       placeholder: 'กรอกรหัสผ่านอีกครั้ง',
       value: '',
-      validation: (value) => {
+      validation: (value, fields) => {
+        const password = fields.find((f) => f.key === 'password')?.value;
+
         if (!value) return 'กรุณากรอก password';
+        if (password !== value) return 'รหัสผ่านไม่ตรงกัน';
         return null;
       },
     },
@@ -57,7 +65,7 @@ export class RegisterComponent {
   }
 
   onLogin() {
-    this.authService.login(this.registerFormData()).subscribe({
+    this.authService.register(this.registerFormData()).subscribe({
       next: () => {
         this.router.navigate(['/login']);
       },
