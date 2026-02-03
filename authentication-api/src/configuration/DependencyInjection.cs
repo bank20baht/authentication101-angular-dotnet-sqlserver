@@ -1,4 +1,9 @@
 using System.IO.Compression;
+using System.Reflection;
+using AuthenticationService.DatabaseContext;
+using AuthenticationService.IRepository;
+using AuthenticationService.Repository;
+using MediatR;
 using Microsoft.AspNetCore.ResponseCompression;
 using Shared.Utils;
 
@@ -43,10 +48,15 @@ public static class DependencyInjectionConfiguration
             });
         });
 
+        services.AddMediatR(Assembly.GetExecutingAssembly());
+
         services.AddSingleton(configuration);
 
         services.AddTransient<AccessTokenService>();
         services.AddTransient<RefreshTokenService>();
+
+        services.AddScoped<ISqlConnectionFactory, SqlConnectionFactory>();
+        services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
     }
 
 }
