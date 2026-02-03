@@ -26,13 +26,15 @@ public static class AuthenticationController
             var existingUser = await mediator.Send(new GetUserPermissionByUsernameQuery(body.username), cancellationToken);
             if (existingUser == null)
             {
-                throw new NotFoundException("plasse register");
+                throw new NotFoundException("User not found. Please register before logging in.");
+
             }
 
             bool verifyed = hasher.Verify(body.password, existingUser.password ?? "");
             if (!verifyed)
             {
-                throw new InvalidPassword("invalid password");
+                throw new InvalidPassword("Invalid username or password.");
+
             }
 
             List<string> permissions = JsonSerializer.Deserialize<List<string>>(existingUser.allow_function ?? "") ?? [];
@@ -108,7 +110,8 @@ public static class AuthenticationController
             }
             else
             {
-                throw new ApplicationErrorException("existing username");
+                throw new ApplicationErrorException("Username already exists. Please choose another username.");
+
             }
 
             return TypedResults.Ok(new AuthorizationResponseDto
@@ -142,14 +145,16 @@ public static class AuthenticationController
             var isExpired = RefreshTokenService.IsRefreshTokenExpired(refreshToken);
             if (isExpired)
             {
-                throw new RefreshTokenNotSameErrorException("Session หมดอายุ กรุณาเข้าสู่ระบบใหม่");
+                throw new RefreshTokenNotSameErrorException("Session has expired. Please log in again.");
+
             }
 
             var existingUser = await mediator.Send(new GetUserPermissionByUsernameQuery(body.username), cancellationToken);
             if (existingUser == null)
             {
 
-                throw new NotExistingUserErrorException($"ไม่พบผู้ใช้ {body.username} ในระบบ กรุณาสมัครบัญชีก่อน");
+                throw new NotExistingUserErrorException("User account does not exist. Please register before continuing.");
+
 
             }
 
