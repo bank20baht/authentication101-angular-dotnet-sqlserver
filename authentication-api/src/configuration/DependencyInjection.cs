@@ -55,6 +55,8 @@ public static class DependencyInjectionConfiguration
         services.AddTransient<AccessTokenService>();
         services.AddTransient<RefreshTokenService>();
 
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
+
         services.AddScoped<ISqlConnectionFactory, SqlConnectionFactory>();
         services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
     }
