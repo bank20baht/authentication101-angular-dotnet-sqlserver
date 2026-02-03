@@ -12,6 +12,8 @@ using Shared.ApplicationErrors;
 using Shared.Extensions;
 using Shared.Models;
 using Shared.Utils;
+using System.Security.Claims;
+using static AuthenticationService.Configuration.JwtTokenConfiguration;
 
 public static class AuthenticationController
 {
@@ -90,18 +92,26 @@ public static class AuthenticationController
 
         });
 
+        authenticationRoutes.MapGetWithCommonResponses("user", async (ClaimsPrincipal token, CancellationToken cancellationToken) =>
+        {
+            return TypedResults.Ok(new
+            {
+                username = token.GetUsername()
+            });
+        }).RequireAuthorization(FunctionRequire.VIEW);
+
         authenticationRoutes.MapPostWithCommonResponses("refresh-token", async
         (
             RefreshTokenRequestBodyDto body,
-        IMediator mediator,
-        AccessTokenService accessTokenService,
-         RefreshTokenService refreshTokenService,
-          HttpContext http,
-          CancellationToken cancellationToken) =>
+            IMediator mediator,
+            AccessTokenService accessTokenService,
+            RefreshTokenService refreshTokenService,
+            HttpContext http,
+            CancellationToken cancellationToken
+            ) =>
         {
             var refreshToken = http.Request.Cookies["refresh_token"] ?? "";
 
-            // TODO: open in phase2
             var isExpired = RefreshTokenService.IsRefreshTokenExpired(refreshToken);
             if (isExpired)
             {
@@ -115,11 +125,6 @@ public static class AuthenticationController
                 throw new NotExistingUserErrorException($"ไม่พบผู้ใช้ {body.username} ในระบบ กรุณาเข้าสู่ระบบก่อน");
 
             }
-            // TODO: open in phase2
-            // if (existingUser.refresh_token != refreshToken)
-            // {
-            //     throw new RefreshTokenNotSameErrorException("พบการเข้าสู่ระบบซ้อน หรือ Session Id ไม่ตรงกับปัจจุบัน");
-            // }
 
             List<string> permissions = JsonSerializer.Deserialize<List<string>>(existingUser.allow_function ?? "") ?? [];
             var accessToken = accessTokenService.Create(new AuthenticationModel
