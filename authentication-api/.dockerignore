@@ -1,0 +1,49 @@
+# Ignore build artifacts and IDE-specific files
+
+**/bin
+**/obj
+**/out
+**/.vscode \*_/.vs
+.dotnet
+.Microsoft.DotNet.ImageBuilder
+_.md
+
+.product-management-test/
+
+# Ignore git files and folders
+
+.git/
+.gitignore
+
+# Ignore logs
+
+\*.log
+
+# Ignore sensitive environment files
+
+.env
+.env.\*
+
+# Ignore sensitive configuration files
+
+\*.config
+
+# Ignore secrets files
+
+secrets/
+_.secret
+_.pem
+
+# Ignore deployment files
+
+_.yaml
+_.yml
+\*.json
+
+# Ignore Dockerfile itself (if necessary)
+
+Dockerfile
+
+# Ignore any other potentially sensitive files or directories
+
+# (add more specific rules as needed)

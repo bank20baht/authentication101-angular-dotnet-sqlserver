@@ -24,6 +24,10 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
         {
             await HandleNotFoundExceptionAsync(context, ex);
         }
+        catch (InvalidPassword ex)
+        {
+            await HandleInvalidPasswordAsync(context, ex);
+        }
         catch (SqlException ex)
         {
             await HandleDatabaseErrorExceptionAsync(context, ex);
@@ -32,6 +36,25 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
         {
             await HandleExceptionAsync(context, ex);
         }
+    }
+
+    private static Task HandleInvalidPasswordAsync(HttpContext context, InvalidPassword ex)
+    {
+        context.Response.ContentType = APPLICATION_JSON;
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+        var error_detail = new ProblemDetailResponse
+        {
+            code = $"ERROR{StatusCodes.Status401Unauthorized}",
+            desc = ex.Message
+        };
+
+        var error_object = JsonSerializer.Serialize(new ProblemObjectResponse
+        {
+            status = error_detail
+        });
+
+        return context.Response.WriteAsync(error_object);
     }
 
     private static Task HandleNotFoundExceptionAsync(HttpContext context, NotFoundException ex)

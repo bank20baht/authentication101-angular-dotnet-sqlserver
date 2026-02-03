@@ -17,6 +17,10 @@ export type LogoutResponseBodyDto = {
   timestamps: string;
 };
 
+export type userData = {
+  username: string;
+};
+
 export type RefreshTokenRequestBody = {
   username: string;
 };

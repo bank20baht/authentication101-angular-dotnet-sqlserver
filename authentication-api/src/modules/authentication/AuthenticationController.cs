@@ -30,6 +30,10 @@ public static class AuthenticationController
             }
 
             bool verifyed = hasher.Verify(body.password, existingUser.password ?? "");
+            if (!verifyed)
+            {
+                throw new InvalidPassword("invalid password");
+            }
 
             List<string> permissions = JsonSerializer.Deserialize<List<string>>(existingUser.allow_function ?? "") ?? [];
             var allowFunctionJson = JsonSerializer.Serialize(permissions,

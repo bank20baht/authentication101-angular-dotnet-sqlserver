@@ -7,6 +7,10 @@ namespace Shared.ApplicationErrors
     public class NotFoundException(string message) : Exception(message)
     {
     }
+    [ExcludeFromCodeCoverage]
+    public class InvalidPassword(string message) : Exception(message)
+    {
+    }
 
     [ExcludeFromCodeCoverage]
     public class ApplicationErrorException(string message) : Exception(message)

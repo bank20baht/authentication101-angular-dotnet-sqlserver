@@ -1,6 +1,7 @@
 <div class="flex flex-col gap-1 items-center justify-center h-full">
-  <div class="flex flex-col items-center justify-center gap-2 min-h-5/7">
+  <div class="flex flex-col items-center justify-center gap-2 min-h-5/7 w-1/3">
     <authen-forms-builder
+      class="w-full"
       [fields]="formFields"
       (formValueChange)="onFormValueChange($event)"
       (onFormValidStatusChange)="isAuthenFormsValid.set($event)"
@@ -8,5 +9,14 @@
     <button class="btn btn-primary w-full" (click)="onLogin()" [disabled]="!isAuthenFormsValid()">
       {{ 'login.forms.login-button' | translate }}
     </button>
+    <p class="text-sm text-center text-gray-500">
+      ยังไม่มีบัญชี?
+      <span
+        class="ml-1 cursor-pointer font-semibold text-blue-600 hover:text-blue-500 hover:underline underline-offset-4 transition-all duration-200"
+        (click)="router.navigate(['register'])"
+      >
+        สมัครสมาชิก
+      </span>
+    </p>
   </div>
 </div>

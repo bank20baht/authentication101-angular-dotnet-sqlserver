@@ -8,6 +8,7 @@ import {
   AuthorizationResponse,
   LogoutResponseBodyDto,
   RefreshTokenRequestBody,
+  userData,
 } from '@/shared';
 
 @Injectable({
@@ -43,6 +44,22 @@ export class AuthenticationService {
     }
   }
 
+  register(body: AuthenticationRequestBody): Observable<AuthorizationResponse> {
+    return this.http
+      .post<AuthorizationResponse>(`${this.baseUrl}/${this.endpoint}/register`, body)
+      .pipe(
+        map((res) => {
+          this.ToastService.success('Register Success');
+          return res;
+        }),
+        catchError((err) => {
+          console.error('API error:', err);
+          this.ToastService.error('Login failed');
+          return throwError(() => new Error('Signin Failed'));
+        }),
+      );
+  }
+
   login(body: AuthenticationRequestBody): Observable<AuthorizationResponse> {
     return this.http
       .post<AuthorizationResponse>(`${this.baseUrl}/${this.endpoint}/login`, body)
@@ -67,6 +84,7 @@ export class AuthenticationService {
       .pipe(
         map((res) => {
           localStorage.removeItem('user');
+          this.userData.set(null);
           this.ToastService.success('Signout Success');
           return res;
         }),
@@ -78,6 +96,17 @@ export class AuthenticationService {
       );
   }
 
+  getUserData(): Observable<userData> {
+    return this.http.get<userData>(`${this.baseUrl}/${this.endpoint}/user`).pipe(
+      map((res) => {
+        return res;
+      }),
+      catchError((err) => {
+        return throwError(() => Error('get Userdata faileds'));
+      }),
+    );
+  }
+
   refreshToken() {
     const local = localStorage.getItem('user');
     if (local) {
@@ -86,7 +115,7 @@ export class AuthenticationService {
         username: data.username,
       };
       return this.http
-        .post<AuthorizationResponse>(`${this.baseUrl}/${this.endpoint}/login`, body)
+        .post<AuthorizationResponse>(`${this.baseUrl}/${this.endpoint}/refresh-token`, body)
         .pipe(
           map((res) => {
             return res;

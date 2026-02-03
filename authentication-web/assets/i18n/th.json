@@ -4,5 +4,6 @@
   "login.forms.password": "รหัสผ่าน",
   "login.forms.login-button": "ลงชื่อเข้าใช้งาน",
   "register.forms.confirm-password": "ยืนยันรหัสผ่าน",
-  "register.forms.register-button": "ลงทะเบียนเข้าใช้งาน"
+  "register.forms.register-button": "ลงทะเบียนเข้าใช้งาน",
+  "main.welcome": "สวัสดี"
 }

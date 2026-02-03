@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  sqlserver:
+    container_name: sql-server2
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "B&S#b%1|24?T"
+      MSSQL_PID: "Developer" 
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+  authentication101-api:
+    container_name: authentication101.api
+    build:
+      context: ./authentication-api/
+      dockerfile: Dockerfile
+    ports:
+      - "4000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      MS_SQL_URL: "Server=sqlserver,1433;Database=Authentication101;User Id=SA;Password=B&S#b%1|24?T;TrustServerCertificate=True;"
+      CORS_ORIGINS: "http://localhost:4200"
+    restart: always
+
+
+  authentication101-web:
+    container_name: authentication101.web
+    build:
+      context: ./authentication-web/
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - authentication101-api
+    restart: always
+
+volumes:
+  mssql_data:
